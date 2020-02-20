@@ -206,7 +206,7 @@ def q1b():
 
 def main():
     try:
-        # q1a()
+        q1a()
         q1b()
     except KeyboardInterrupt:
         pass
