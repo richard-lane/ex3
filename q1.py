@@ -152,7 +152,9 @@ def fit_methods(num_points):
     # Number of histogram bins to use
     num_bins = 100
     bin_limits = [i for i in np.linspace(0, np.pi, num=num_bins)]
-    bin_centres = [0.5*(bin_limits[i] + bin_limits[i+1]) for i in range(num_bins-1)]
+    bin_centres = [
+        0.5 * (bin_limits[i] + bin_limits[i + 1]) for i in range(num_bins - 1)
+    ]
 
     analytical_angles = analytical_sin_random_numbers(num_points)
     acc_rej_angles = accept_reject_random_numbers(
@@ -170,13 +172,16 @@ def fit_methods(num_points):
 
     # Expect our distributions to look like sin(x), times a normalisation
     # Parametrise this as a * sin(b*x)
-    theta = [i for i in np.linspace(0, np.pi, num=num_bins)]
     expected_dist = lambda x, a, b: a * np.sin(b * x)  # named lambda lol
     expected_a = num_points / num_bins * np.pi / 2
-    expected_b = 1
+    expected_b = 1.0
 
-    analytical_popt, analytical_pcov = optimize.curve_fit(expected_dist, bin_centres, analytical_hist)
-    acc_rej_popt, acc_rej_pcov = optimize.curve_fit(expected_dist, bin_centres, acc_rej_hist)
+    analytical_popt, analytical_pcov = optimize.curve_fit(
+        expected_dist, bin_centres, analytical_hist, p0=(expected_a, expected_b)
+    )
+    acc_rej_popt, acc_rej_pcov = optimize.curve_fit(
+        expected_dist, bin_centres, acc_rej_hist, p0=(expected_a, expected_b)
+    )
 
     # Do some output
     print(f"Analytical:\n\ta =\t{analytical_popt[0]}+-{analytical_pcov[0][0]}")
@@ -188,20 +193,17 @@ def fit_methods(num_points):
     print(f"\nExpected values\n\t{expected_a}\n\t{expected_b}")
 
 
-
-
 def q1b():
     """
-    Do some stuff
+    Fit the two methods to the expected function and time them both
 
     """
     # Perform a fit to each and see how it compares to the analytical solution
+    fit_methods(100000)
 
     # The argument here refers to the maximum number of points to investigate. e.g. "5" would mean generate up to
     # 100,000 points
-    # time_methods(5)
-
-    fit_methods(100000)
+    time_methods(5)
 
 
 def main():
