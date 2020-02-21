@@ -10,19 +10,34 @@ def find_background_mean():
     in each experiment
 
     """
-    pass
+    return np.random.normal(4.8, 0.5)
 
 
-def find_poisson_counts(mean):
+def perform_experiment(signal_cross_section):
     """
-    Draw a number from a Poisson distribution with the given mean
+    Perform a simulated counting experiment with the given cross section, return the number of events
 
     """
-    pass
+    luminosity = 10
+    # Find this experiment's signal and background counts
+    background_counts = np.random.poisson(find_background_mean())
+    signal_counts = np.random.poisson(luminosity * signal_cross_section)
+
+    return signal_counts + background_counts
 
 
 def main():
-    pass
+    counts = []
+    errs = []
+    for signal_cross_section in np.linspace(0, 3):
+        tmp = []
+        for i in range(10000):
+            tmp.append(perform_experiment(signal_cross_section))
+        counts.append(np.mean(tmp))
+        errs.append(np.std(tmp))
+
+    for i in range(len(counts)):
+        print(f"{counts[i]}\t+-\t{errs[i]}")
 
 
 if __name__ == "__main__":
